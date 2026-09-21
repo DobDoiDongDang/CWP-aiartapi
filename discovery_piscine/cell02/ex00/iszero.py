@@ -1,7 +1,7 @@
 #include stdio.h
 def iszero(number):
     try:
-        int(number)
+        number = int(number)
     except ValueError:
         print("Oi!! Please enter integer")
         return
