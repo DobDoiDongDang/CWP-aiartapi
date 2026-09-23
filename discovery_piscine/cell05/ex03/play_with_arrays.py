@@ -6,4 +6,5 @@ for i in yo:
     if i > 5 and (i+2) not in whatup:
         whatup.append(i+2)
 
-print(whatup)
+print(yo)
+print(set(whatup))
