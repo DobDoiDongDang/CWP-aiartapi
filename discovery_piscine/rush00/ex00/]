@@ -1,5 +1,4 @@
 import math
-import sys
 def king_pattern(location, boardsize):
     '''check king pattern'''
     aim = []
@@ -30,8 +29,8 @@ def cross_pattern(location, boardsize):
         upperstart_x = 1
         upperstart_y = y - (x - 1)
     for i in range(0, 1+boardsize-max(upperstart_x, upperstart_y)):
-        if location != list([min(boardsize, upperstart_x+i), min(boardsize, upperstart_y+i)]):
-            aim.append(list([min(boardsize, upperstart_x+i), min(boardsize, upperstart_y+i)]))
+        if location != list([min(6, upperstart_x+i), min(6, upperstart_y+i)]):
+            aim.append(list([min(6, upperstart_x+i), min(6, upperstart_y+i)]))
     for i in range(0, boardsize+1):
         for j in range(0, boardsize+1):
             if i+j == x+y and location != list([i, j]):
@@ -83,70 +82,29 @@ def is_check(location_list):
                     return True
     return False
 
-def is_checkmate(location_list):
-    list_point = []
-    king_location = location_list["K"]["Location"]
-    list_point.append(king_location)
-    list_point.extend(location_list["K"]["aim"])
-    for pieces in location_list.keys():
-        if pieces[0] != "K":
-            for aim in location_list[pieces]["aim"]:
-                if aim in list_point:
-                    list_point.pop(list_point.index(aim))
-                if len(list_point) == 0:
-                    return True
-    return False
 
 
-
-def is_king(board):
+def isking(board):
     '''Check if king in board'''
     return True if board.count("K") == 1 else False
 
-def is_square(board):
+def issquare(board):
     '''Check if board is square'''
     boardsize = len(board.replace("\n", ""))
     row = 1
     for i in board:
         if i == "\n":
             row += 1
-    row -= 1
     if row**2 == boardsize:
         return True
     else:
         return False
 
-def render_board(pieces_list, boardsize):
+def render_board(board):
     '''render board'''
-    pieces_location = []
-    pieces_name = []
-    aim_location = []
-    col_indi = 1
-    row_indi = 1
-    for pieces in pieces_list.keys():
-        pieces_location.append(pieces_list[pieces]["Location"])
-        pieces_name.append(pieces)
-        if pieces != "K":
-            aim_location.extend(pieces_list[pieces]["aim"])
-    print(" D", end="")
-    for y in range(0, boardsize+1):
-        for x in range(0, boardsize+1):
-            if y == 0 and col_indi > boardsize:
-                continue
-            if y == 0 and col_indi <= boardsize:
-                print(f" {col_indi} ", end="")
-                col_indi += 1
-            elif x == 0 and row_indi <= boardsize:
-                print(f" {row_indi}", end="")
-                row_indi += 1
-            elif list([x, y]) in pieces_location: 
-                print(f" {pieces_name[pieces_location.index(list([x,y]))][0]} ", end="")
-            elif list([x, y]) in aim_location:
-                print(" X ", end="")
-            else:
-                print(" . ", end="")
-        print()
-    
+    for i in board:
+        print(i, end="")
+    print()
 
 def finding_pieces_location(board):
     '''Find a pieces location'''
@@ -187,39 +145,20 @@ def finding_pieces_location(board):
 def checkmate(board):
     '''Checkmate bro'''
     board = board.replace(" ", "")
+    render_board(board)
+    print("Is square : ", issquare(board))
+    print("Is King : ", isking(board))
     dic = finding_pieces_location(board)
-    render_board(dic, int(math.sqrt(len(board.replace("\n", "")))))
-    print("="*(int(math.sqrt(len(board.replace("\n", ""))))*3), end="=\n")
-    if not is_king(board):
-        print("ERROR!! No King input")
-        return
-    if not is_square(board):
-        print("ERROR!! Not a square board")
-        return
-    if is_checkmate(dic):
-        print("SUCCESS!!!!!")
-    elif is_check(dic):
-        print("SUCCESS")
-    else:
-        print("FAIL")
-    
+    print(is_check(dic))
+    print("dic : ", dic)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        for i in range(1, len(sys.argv)):
-            with open(sys.argv[i], 'r') as f:
-                checkmate(f.read())
-    else:
-        board = """\
-                ......R.
-                ........
-                R.......
-                ........
-                ........
-                ........
-                ...K....
-                ........
-
-                """
-        checkmate(board)
+    board = """\
+            .....
+            ...K.
+            ..Q..
+            .....
+            .....\
+            """
+    checkmate(board)
